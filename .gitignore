@@ -1,0 +1,21 @@
+# ▶️ Python bytecode
+pycache/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ▶️ Virtual environments
+.venv/
+venv/
+.idea/
+.env
+
+# ▶️ Md and CSV
+*.md
+!README.md
+
+# Migrations
+admin_for_bot/admin_panel/migrations/
+
+# Media
+media/
