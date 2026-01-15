@@ -80,3 +80,58 @@ class CartItem(models.Model):
     class Meta:
         verbose_name = 'Элемент корзины'
         verbose_name_plural = 'Элементы корзину'
+
+
+class Order(models.Model):
+    """
+        Класс заказов
+    """
+
+    STATUS_CHOICES = [
+        ('new', 'новый'),
+        ('processing', 'в обработке'),
+        ('delivered', 'доставлен'),
+        ('cancelled', 'отменён')
+    ]
+
+    PAYMENT_METHODS = [
+        ('cash', 'наличные'),
+        ('card', 'карта')
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Пользователь')
+    order_number = models.CharField('Номер заказа', max_length=20, unique=True, default='')
+    name = models.CharField('ФИО', max_length=50)
+    phone = models.CharField('Номер телефона', max_length=20, unique=True)
+    email = models.EmailField('Электронная почта', blank=True)
+    address = models.TextField('Адрес доставки', max_length=80)
+    delivery_time = models.CharField('Время доставки', max_length=50, blank=True)
+    comment = models.TextField('Коментарий к заказу', blank=True)
+    created_at = models.DateTimeField('Дата заказа', auto_now_add=True)
+    status = models.CharField('Статус заказа', max_length=20, choices=STATUS_CHOICES, default='new')
+    payment_method = models.CharField('Метод оплаты', max_length=20, choices=PAYMENT_METHODS, default='cash')
+    is_paid = models.BooleanField('Оплачен', default=False)
+
+    def __str__(self):
+        return f'Номер заказа: {self.order_number}'
+
+    def total_price(self):
+        return sum(item.total_price for item in self.items.all())
+
+
+class OrderItem(models.Model):
+    """
+        Класс товара из заказа
+    """
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Заказ')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name='Продукт')
+    quantity = models.PositiveIntegerField('Количество', default=1)
+    price = models.DecimalField('Цена', max_digits=10, decimal_places=2)
+
+    @property
+    def total_price(self):
+        return self.price * self.quantity
+
+    def __str__(self):
+        return f'{self.quantity} x {self.product}'
