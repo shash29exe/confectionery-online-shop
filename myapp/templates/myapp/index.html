@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+    <div class="featured-products">
+        <h1>Популярные товары:</h1>
+        <p>{{ featured_products }}</p>
+    </div>
+
+    <hr>
+
+    <div class="reviews">
+        <h1>Отзывы</h1>
+        <p>{{ latest_reviews }}</p>
+    </div>
+{% endblock %}

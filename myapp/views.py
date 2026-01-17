@@ -1,3 +1,11 @@
 from django.shortcuts import render
 
-# Create your views here.
+from myapp.models import Product, Review
+
+
+def index(request):
+    featured_products = Product.objects.filter(is_available=True)[:4]
+    latest_reviews = Review.objects.all().order_by('created_at')[:3]
+    return render(request, 'myapp/index.html',
+                  {'title': 'Главная страница', 'welcome_message': 'Добро пожаловать',
+                   'featured_products': featured_products, 'latest_reviews': latest_reviews})
