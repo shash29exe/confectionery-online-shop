@@ -1,7 +1,9 @@
 from django.shortcuts import render
+import logging
 
 from myapp.models import Product, Review
 
+logger = logging.getLogger(__name__)
 
 def index(request):
     featured_products = Product.objects.filter(is_available=True)[:4]
