@@ -53,7 +53,7 @@ class Review(models.Model):
     author = models.CharField('Автор', max_length=50)
     text = models.TextField('Содержимое отзыва')
     rating = models.PositiveSmallIntegerField('Оценка', default=5)
-    created_ad = models.DateTimeField('Дата создания', auto_now_add=True)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     def __str__(self):
         return f'Отзыв от {self.author}'
