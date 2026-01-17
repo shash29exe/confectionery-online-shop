@@ -95,12 +95,6 @@ body {
     align-items: center;
 }
 
-.site-stat {
-    grid-column: 1;
-    text-align: left;
-    line-height: 1.4;
-}
-
 .footer-center {
     display: grid;
     grid-column: 2;

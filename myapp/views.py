@@ -16,3 +16,6 @@ def index(request):
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, is_available=True)
     return render(request, 'myapp/product_detail.html', {'product': product})
+
+def about(request):
+    return render(request, 'myapp/about.html')
