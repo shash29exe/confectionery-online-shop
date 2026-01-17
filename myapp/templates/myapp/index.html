@@ -1,15 +1,31 @@
-{% extends 'myapp/base.html' %}
+
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <div class="featured-products">
-        <h1>Популярные товары:</h1>
-        <p>{{ featured_products }}</p>
-    </div>
+<div class="content">
+    <h1>{{ title }}</h1>
+    <p>{{ welcome_message }}</p>
+</div>
+<hr>
+<h1>Популярные товары</h1>
 
-    <hr>
-
-    <div class="reviews">
-        <h1>Отзывы</h1>
-        <p>{{ latest_reviews }}</p>
+<div class="cards">
+    {% for product in products %}
+    <div class="card">
+        <a href="{{ product.get_absolute_url }}">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'img/category-default.png' %}" alt="">
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>{{ product.price }} ₽</p>
+        </a>
     </div>
+    {% endfor %}
+</div>
 {% endblock %}

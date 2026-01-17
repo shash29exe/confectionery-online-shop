@@ -1,16 +1,33 @@
+
 {% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>{{ title }}</h1>
-    <h2>{{ welcome_message }}</h2>
-    <hr>
 
+<div class="header">
+    <h1><a href="/">Главная</a></h1>
+</div>
+
+<div class="content">
     {% block content %}{% endblock %}
+</div>
+
+<div class="footer">
+    <div class="footer-center">
+        <div class="footer-icons">
+            <a href="https://github.com/shash29exe"><img src="{% static 'img/github.png' %}" alt="GitHub"></a>
+            <a href="https://t.me/shash29_sh"><img src="{% static 'img/telegram.png' %}" alt="Telegram"></a>
+        </div>
+        <p>© 2025 Shash29</p>
+    </div>
+</div>
+
 </body>
 </html>

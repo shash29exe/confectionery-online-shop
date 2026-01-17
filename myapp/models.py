@@ -33,7 +33,7 @@ class Product(models.Model):
         ordering = ['-created_at']
 
     def get_absolute_url(self):
-        return reverse('product-detail', args=[self.pk])
+        return reverse("product_detail", args=[self.slug])
 
 
 class ProductImage(models.Model):
