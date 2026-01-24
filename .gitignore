@@ -14,8 +14,14 @@ venv/
 *.md
 !README.md
 
-# Migrations
-admin_for_bot/admin_panel/migrations/
-
 # Media
 media/
+
+# DB
+*.sqlite3
+
+# Admin
+static/admim/
+
+# Migrations
+myapp/migrations/
