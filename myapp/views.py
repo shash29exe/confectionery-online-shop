@@ -70,3 +70,20 @@ def remove_from_cart(request, item_id):
     cart_item.delete()
 
     return redirect('cart')
+
+
+@login_required
+def reviews(request):
+    if request.method == 'POST':
+        text = request.POST.get('text', '').strip()
+        rating = int(request.POST.get('rating', 5))
+        if not text:
+            messages.error(request, 'Заполните отзыв')
+
+        else:
+            Review.objects.create(author=request.username, text=text, rating=rating)
+            messages.success(request, 'Ваш отзыв отправлен')
+            return redirect('reviews')
+
+    reviews_list = Review.objects.all().order_by('-created_at')
+    return render(request, 'myapp/reviews.html', {'reviews': reviews_list, 'title': 'Отзывы о нас'})
