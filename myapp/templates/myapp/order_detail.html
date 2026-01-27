@@ -1,12 +1,14 @@
 {% extends "myapp/base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% block title %}Детали заказа{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="order-detail">
+    <h1>Детали заказа</h1>
+    {% if order %}
+        <p>Номер заказа: {{ order.id }}</p>
+        <p>Статус: {{ order.status }}</p>
+        <p>Сумма: {{ order.total }} ₽</p>
+    {% endif %}
+</div>
+{% endblock %}

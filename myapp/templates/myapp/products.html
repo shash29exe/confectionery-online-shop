@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "myapp/base.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Товары{% endblock %}
+
+{% block content %}
+<h1>Все товары</h1>
+<div class="cards">
+    {% for product in products %}
+    <div class="card">
+        <a href="{{ product.get_absolute_url }}">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'img/category-default.png' %}" alt="">
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>{{ product.price }} ₽</p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

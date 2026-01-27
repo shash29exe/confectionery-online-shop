@@ -1,12 +1,14 @@
 {% extends "myapp/base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% block title %}Оформление заказа{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="order-form">
+    <h1>Оформление заказа</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Оформить заказ</button>
+    </form>
+</div>
+{% endblock %}

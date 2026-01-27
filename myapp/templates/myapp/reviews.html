@@ -1,14 +1,23 @@
 {% extends "myapp/base.html" %}
+{% load static %}
 
+{% block title %}Отзывы{% endblock %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% title %}{% endblock %}</title>
-</head>
-<body>
-    {% reviews %}
-</body>
-</html>
+{% block content %}
+<div class="reviews">
+    <h1>Отзывы</h1>
+    {% if reviews %}
+        <div class="reviews-list">
+            {% for review in reviews %}
+            <div class="review">
+                <h3>{{ review.author }}</h3>
+                <p>{{ review.text }}</p>
+                <p>Рейтинг: {{ review.rating }}/5</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Отзывов пока нет</p>
+    {% endif %}
+</div>
+{% endblock %}

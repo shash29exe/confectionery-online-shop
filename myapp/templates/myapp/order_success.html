@@ -1,12 +1,11 @@
 {% extends "myapp/base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% block title %}Заказ успешно оформлен{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="order-success">
+    <h1>Заказ успешно оформлен!</h1>
+    <p>Спасибо за ваш заказ. Номер вашего заказа: {{ order.id }}</p>
+    <a href="/">Вернуться на главную</a>
+</div>
+{% endblock %}
