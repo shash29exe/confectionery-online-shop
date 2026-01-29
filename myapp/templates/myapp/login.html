@@ -1,21 +1,13 @@
-{% extends "myapp/base.html" %}
-
-{% block title %}Вход{% endblock %}
+{% extends 'myapp/base.html' %}
 
 {% block content %}
-<div class="login-form">
-    <h1>Вход</h1>
+<div class="auth-container">
+    <h2>Вход в систему</h2>
     <form method="post">
         {% csrf_token %}
-        <div>
-            <label for="username">Имя пользователя:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Вход</button>
+        {{ form.as_p }}
+        <button type="submit" class="auth-button">Войти</button>
     </form>
+    <p>Еще нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь</a></p>
 </div>
 {% endblock %}
