@@ -1,5 +1,4 @@
 import random
-from statistics import quantiles
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -71,7 +70,7 @@ def add_to_cart(request, product_id):
         cart_item.save()
 
     messages.success(request, f'{product.name} добавлен в корзину')
-    return redirect('product')
+    return redirect('product_list')
 
 
 @login_required
@@ -105,7 +104,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('index')
 
     else:
         form = UserCreationForm()

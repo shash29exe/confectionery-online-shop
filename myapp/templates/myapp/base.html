@@ -33,7 +33,7 @@
                             <a href="{% url 'login' %}" class="auth-link">Войти</a>
                             <a href="{% url 'register' %}" class="auth-link">Регистрация</a>
                         {% endif %}
-                        <a href="{% url 'cart' %}" class="cart-link">Корзина ({{ cart_items_count|default:0 }})</a>
+                        <a href="{% url 'cart' %}" class="cart-link">Корзина ({{ cart_items_count }}, {{ cart_total_price }})</a>
                     </div>
                 </nav>
             </div>
