@@ -48,12 +48,11 @@ class ProductListView(ListView):
 
 @login_required
 def cart_view(request):
-    cart_items = CartItem.objects.filter(user=request.user)
-    total = sum(item.product.price * item.quantity for item in cart_items)
-
     return render(request, 'myapp/cart.html',
-                  {'cart_items': cart_items, 'total': total,
-                   'cart_items_count': cart_items.count()})
+                  {'cart_items': request.cart['items'],
+                   'total': request.cart['total_price'],
+                   'cart_items_count': request.cart['total_qty']
+                   })
 
 
 @login_required
