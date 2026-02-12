@@ -43,21 +43,24 @@ class CartMiddleware:
             'items': [],
             'total_qty': 0,
             'total_price': 0,
+            'has_items': False,
         }
 
         if request.user.is_authenticated:
-            cart_items = CartItem.objects.filter(user=request.user)
+            cart_items = CartItem.objects.filter(user=request.user).select_related('product')
 
-            totals = cart_items.aggregate(
-                total_qty=Sum('quantity'),
-                total_price=Sum(F('quantity') * F('product__price')),
-            )
+            if cart_items.exists():
+                totals = cart_items.aggregate(
+                    total_qty=Sum('quantity'),
+                    total_price=Sum(F('quantity') * F('product__price')),
+                )
 
-            request.cart = {
-                'items': cart_items,
-                'total_qty': totals['total_qty'] or 0,
-                'total_price': totals['total_price'] or 0,
-            }
+                request.cart = {
+                    'items': cart_items,
+                    'total_qty': totals['total_qty'] or 0,
+                    'total_price': totals['total_price'] or 0,
+                    'has_items': True,
+                }
 
         response = self.get_response(request)
         return response
