@@ -48,11 +48,7 @@ class ProductListView(ListView):
 
 @login_required
 def cart_view(request):
-    return render(request, 'myapp/cart.html',
-                  {'cart_items': request.cart['items'],
-                   'total': request.cart['total_price'],
-                   'cart_items_count': request.cart['total_qty']
-                   })
+    return render(request, 'myapp/cart.html')
 
 
 @login_required

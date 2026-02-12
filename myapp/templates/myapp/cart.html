@@ -3,14 +3,14 @@
 {% block content %}
 <h1>Корзина</h1>
 <ul>
-    {% for item in cart_items %}
+    {% for item in request.cart.items %}
     <li>
         {{ item.product.name }} - {{ item.quantity }} × {{ item.product.price }} руб.
         <a href="{% url 'remove_from_cart' item.id %}">Удалить</a>
     </li>
     {% endfor %}
 </ul>
-{% if cart_items %}
+{% if request.cart.items %}
 <form method="post" action="{% url 'order' %}">
     {% csrf_token %}
     <button type="submit" class="order-btn">Оформить заказ</button>
