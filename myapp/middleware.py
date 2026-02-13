@@ -13,6 +13,8 @@ class RequestLogMiddleware:
         Логирование каждого запроса, времени, пользователя
     """
 
+    SLOW_REQUEST = 0.5
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -20,12 +22,22 @@ class RequestLogMiddleware:
         start_time = time.time()
         response = self.get_response(request)
         duration = round(time.time() - start_time, 3)
+
+        if request.path.startswith('/static/'):
+            return response
+
         user = request.user if request.user.is_authenticated else 'Аноним'
 
-        logger.info(
-            f'{request.method} {request.path} | статус: {response.status_code} | '
-            f'пользователь: {user} | {duration}'
+        log_message = (
+            f'{request.method} {response.status_code} {request.path} | '
+            f'user: {user} | {duration}'
         )
+
+        if response.status_code >= 400:
+            logger.warning(log_message)
+
+        elif duration > self.SLOW_REQUEST:
+            logger.info(f'Медленный запрос: {log_message}')
 
         return response
 
