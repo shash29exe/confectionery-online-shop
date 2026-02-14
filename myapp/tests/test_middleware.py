@@ -4,6 +4,7 @@ from myapp.models import CartItem, Product
 from django.http import HttpResponse
 from myapp.middleware import CartMiddleware
 
+
 class CartMiddlewareTests(TestCase):
     """
         Тест корзины анонимного и авторизованного пользователя
@@ -40,3 +41,17 @@ class CartMiddlewareTests(TestCase):
         self.assertEqual(request.cart['total_qty'], 0)
         self.assertEqual(request.cart['total_price'], 0)
         self.assertFalse(request.cart['has_items'])
+
+    def test_authenticated_user_with_items(self):
+        CartItem.objects.create(user=self.user, product=self.product, quantity=2)
+
+        request = self.factory.get('/')
+        request.user = self.user
+
+        middleware = CartMiddleware(self.get_response)
+        middleware(request)
+
+        self.assertEqual(request.cart['total_qty'], 2)
+        self.assertEqual(request.cart['total_price'], 300)
+        self.assertTrue(request.cart['has_items'])
+        self.assertEqual(len(request.cart['items']), 1)
