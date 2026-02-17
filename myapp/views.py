@@ -85,7 +85,7 @@ def reviews(request):
             messages.error(request, 'Заполните отзыв')
 
         else:
-            Review.objects.create(author=request.username, text=text, rating=rating)
+            Review.objects.create(author=request.user.username, text=text, rating=rating)
             messages.success(request, 'Ваш отзыв отправлен')
             return redirect('reviews')
 
@@ -123,7 +123,7 @@ def order_view(request):
             order.save()
 
             for item in cart_items:
-                OrderItem.objects.create(order=order, product=item.product, quantiy=item.quantity,
+                OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity,
                                          price=item.product.price)
 
             cart_items.delete()
