@@ -95,8 +95,9 @@ class Order(models.Model):
     ]
 
     PAYMENT_METHODS = [
-        ('cash', 'наличные'),
-        ('card', 'карта')
+        ('cash', 'Наличными при получении'),
+        ('card', 'Банковской картой онлайн'),
+        ('sbp', 'Система быстрых платежей (СБП)')
     ]
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Пользователь')

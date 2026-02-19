@@ -17,7 +17,7 @@
                             {% if image %}
                             <img src="{{ image.image.url }}" alt="{{ product.name }}" width="80">
                             {% else %}
-                            <img src="{% static 'images/no-image.jpg' %}" alt="No image" width="80">
+                            <img src="{% static 'myapp/img/article-default.png' %}" alt="No image" width="80">
                             {% endif %}
                             {% endwith %}
                         </a>

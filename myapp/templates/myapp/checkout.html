@@ -13,20 +13,14 @@
                 </div>
                 
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" action="{% url 'order' %}">
                         {% csrf_token %}
                         
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="id_first_name" class="form-label">Имя</label>
-                                <input type="text" class="form-control" id="id_first_name" 
-                                       name="first_name" value="{{ user.first_name }}" required>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="id_last_name" class="form-label">Фамилия</label>
-                                <input type="text" class="form-control" id="id_last_name" 
-                                       name="last_name" value="{{ user.last_name }}" required>
+                            <div class="col-12">
+                                <label for="id_name" class="form-label">ФИО</label>
+                                <input type="text" class="form-control" id="id_name" 
+                                       name="name" value="{{ user.get_full_name }}" required>
                             </div>
                             
                             <div class="col-12">
@@ -58,9 +52,9 @@
                             </div>
                             
                             <div class="col-12">
-                                <label for="id_notes" class="form-label">Комментарий к заказу</label>
-                                <textarea class="form-control" id="id_notes" 
-                                          name="notes" rows="2"></textarea>
+                                <label for="id_comment" class="form-label">Комментарий к заказу</label>
+                                <textarea class="form-control" id="id_comment" 
+                                          name="comment" rows="2"></textarea>
                             </div>
                         </div>
                         

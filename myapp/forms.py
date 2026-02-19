@@ -23,8 +23,9 @@ class OrderForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['name', 'phone', 'email', 'address', 'delivery_time', 'comment']
+        fields = ['name', 'phone', 'email', 'address', 'delivery_time', 'comment', 'payment_method']
         widgets = {
             'delivery_time': forms.TextInput(attrs={'placeholder': 'Пример: с 10 до 11.'}),
-            'comment': forms.Textarea(attrs={'rows': 3})
+            'comment': forms.Textarea(attrs={'rows': 3}),
+            'payment_method': forms.Select()
         }

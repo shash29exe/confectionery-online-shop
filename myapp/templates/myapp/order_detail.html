@@ -37,11 +37,15 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <a href="{{ item.product.get_absolute_url }}" class="me-3">
-                                                {% if item.product.image %}
-                                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="60">
-                                                {% else %}
-                                                    <img src="{% static 'images/no-image.jpg' %}" alt="No image" width="60">
-                                                {% endif %}
+                                                {% with item.product.images.first as pimg %}
+                                                    {% if pimg %}
+                                                        <img src="{{ pimg.image.url }}" alt="{{ item.product.name }}" width="60">
+                                                    {% elif item.product.main_image %}
+                                                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" width="60">
+                                                    {% else %}
+                                                        <img src="{% static 'myapp/img/article-default.png' %}" alt="No image" width="60">
+                                                    {% endif %}
+                                                {% endwith %}
                                             </a>
 
                                             <div>

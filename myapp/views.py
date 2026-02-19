@@ -28,6 +28,20 @@ def product_detail(request, pk):
     return render(request, 'myapp/product_detail.html', {'product': product})
 
 
+@login_required
+def toggle_wishlist(request, slug):
+    """Simple placeholder to satisfy template link: not yet persistent.
+
+    Finds the product and redirects back, showing a short message.
+    """
+    product = get_object_or_404(Product, slug=slug, is_available=True)
+    messages.info(request, f'Товар "{product.name}" отмечен в избранном (временно)')
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+    return redirect(product.get_absolute_url())
+
+
 def about(request):
     return render(request, 'myapp/about.html')
 
@@ -91,6 +105,22 @@ def reviews(request):
 
     reviews_list = Review.objects.all().order_by('-created_at')
     return render(request, 'myapp/reviews.html', {'reviews': reviews_list, 'title': 'Отзывы о нас'})
+
+
+@login_required
+def add_review(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_available=True)
+    if request.method == 'POST':
+        text = request.POST.get('text', '').strip()
+        rating = int(request.POST.get('rating', 5))
+        if not text:
+            messages.error(request, 'Заполните отзыв')
+        else:
+            Review.objects.create(author=request.user.username, text=text, rating=rating)
+            messages.success(request, 'Ваш отзыв отправлен')
+            return redirect('product_detail', pk=product.pk)
+
+    return render(request, 'myapp/add_views.html', {'product': product})
 
 
 def register(request):
