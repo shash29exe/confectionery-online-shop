@@ -100,7 +100,7 @@ class Order(models.Model):
         ('sbp', 'Система быстрых платежей (СБП)')
     ]
 
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Пользователь')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', verbose_name='Пользователь')
     order_number = models.CharField('Номер заказа', max_length=20, unique=True, default='')
     name = models.CharField('ФИО', max_length=50)
     phone = models.CharField('Номер телефона', max_length=20, unique=True)

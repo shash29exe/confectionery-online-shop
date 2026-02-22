@@ -1,10 +1,12 @@
 import random
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 import logging
 
 from django.views.generic import ListView
@@ -95,12 +97,21 @@ def reviews(request):
     if request.method == 'POST':
         text = request.POST.get('text', '').strip()
         rating = int(request.POST.get('rating', 5))
+
+        pause = timezone.now() - timedelta(minutes=1)
+
+        recent_review = Review.objects.filter(author=request.user.username, created_at__gt=pause).exists()
+
+        if recent_review:
+            messages.error(request, 'Вы можете оставлять отзыв раз в пять минут.')
+            return redirect('reviews')
+
         if not text:
-            messages.error(request, 'Заполните отзыв')
+            messages.error(request, 'Заполните отзыв.')
 
         else:
             Review.objects.create(author=request.user.username, text=text, rating=rating)
-            messages.success(request, 'Ваш отзыв отправлен')
+            messages.success(request, 'Ваш отзыв отправлен.')
             return redirect('reviews')
 
     reviews_list = Review.objects.all().order_by('-created_at')
