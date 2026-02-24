@@ -11,7 +11,7 @@ import logging
 
 from django.views.generic import ListView
 
-from myapp.forms import OrderForm
+from myapp.forms import OrderForm, ReviewForm
 from myapp.models import Product, Review, CartItem, OrderItem, Order
 
 logger = logging.getLogger(__name__)
@@ -95,24 +95,46 @@ def remove_from_cart(request, item_id):
 @login_required
 def reviews(request):
     if request.method == 'POST':
-        text = request.POST.get('text', '').strip()
-        rating = int(request.POST.get('rating', 5))
+        form = ReviewForm(request.POST)
 
-        pause = timezone.now() - timedelta(minutes=1)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.author = request.user.username
+            review.save()
 
-        recent_review = Review.objects.filter(author=request.user.username, created_at__gt=pause).exists()
-
-        if recent_review:
-            messages.error(request, 'Вы можете оставлять отзыв раз в пять минут.')
             return redirect('reviews')
-
-        if not text:
-            messages.error(request, 'Заполните отзыв.')
 
         else:
-            Review.objects.create(author=request.user.username, text=text, rating=rating)
-            messages.success(request, 'Ваш отзыв отправлен.')
-            return redirect('reviews')
+            messages.error(request, 'Отзыв должен быть не длиннее 100 символов')
+
+    else:
+        form = ReviewForm()
+
+    reviews_list = Review.objects.all().order_by('-created_at')
+
+    return render(request, 'myapp/reviews.html', {
+        'form': form, 'reviews': reviews_list, 'title': 'Отзывы о нас'
+    })
+
+        # text = request.POST.get('text', '').strip()
+        # rating = int(request.POST.get('rating', 5))
+        #
+        # pause = timezone.now() - timedelta(minutes=1)
+        #
+        # recent_review = Review.objects.filter(author=request.user.username, created_at__gt=pause).exists()
+        #
+        # if recent_review:
+        #     messages.error(request, 'Вы можете оставлять отзыв раз в пять минут.')
+        #     return redirect('reviews')
+        #
+        # if not text:
+        #     messages.error(request, 'Заполните отзыв.')
+        #
+        # else:
+        #     Review.objects.create(author=request.user.username, text=text, rating=rating)
+        #     messages.success(request, 'Ваш отзыв отправлен.')
+        #     return redirect('reviews')
+
 
     reviews_list = Review.objects.all().order_by('-created_at')
     return render(request, 'myapp/reviews.html', {'reviews': reviews_list, 'title': 'Отзывы о нас'})

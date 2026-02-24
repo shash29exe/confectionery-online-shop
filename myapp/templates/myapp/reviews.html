@@ -4,17 +4,12 @@
 <div class="reviews-container">
     <h2>Отзывы наших клиентов</h2>
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
     {% if user.is_authenticated %}
     <div class="review-form">
         <h3>Оставить отзыв</h3>
+        <ul class="messages">
+            <li>Отзыв должен быть не длиннее 100 символов</li>
+        </ul>
         <form method="post">
             {% csrf_token %}
             <div class="form-wrapper">
