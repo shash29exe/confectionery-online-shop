@@ -202,13 +202,13 @@ def order_success(request, order_id):
 
 @login_required
 def order_detail(request, order_id):
+    """View для отображения деталей конкретного заказа"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
-
     return render(request, 'myapp/order_detail.html', {'order': order})
 
 
 @login_required
 def order_history(request):
+    """View для отображения истории заказов пользователя"""
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
-
     return render(request, 'myapp/order_history.html', {'orders': orders})

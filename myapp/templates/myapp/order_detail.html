@@ -4,10 +4,11 @@
 {% block content %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Заказ #{{ order.order_number }}</h1>
+        <h1><i class="fas fa-receipt me-2"></i>Заказ #{{ order.order_number }}</h1>
         <span class="badge
             {% if order.status == 'delivered' %}bg-success
             {% elif order.status == 'cancelled' %}bg-danger
+            {% elif order.status == 'processing' %}bg-warning text-dark
             {% else %}bg-primary{% endif %}">
             {{ order.get_status_display }}
         </span>
@@ -17,12 +18,12 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Состав заказа</h5>
+                    <h5 class="mb-0"><i class="fas fa-box me-2"></i>Состав заказа</h5>
                 </div>
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Товар</th>
@@ -39,32 +40,32 @@
                                             <a href="{{ item.product.get_absolute_url }}" class="me-3">
                                                 {% with item.product.images.first as pimg %}
                                                     {% if pimg %}
-                                                        <img src="{{ pimg.image.url }}" alt="{{ item.product.name }}" width="60">
+                                                        <img src="{{ pimg.image.url }}" alt="{{ item.product.name }}" width="60" class="rounded">
                                                     {% elif item.product.main_image %}
-                                                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" width="60">
+                                                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" width="60" class="rounded">
                                                     {% else %}
-                                                        <img src="{% static 'myapp/img/article-default.png' %}" alt="No image" width="60">
+                                                        <img src="{% static 'myapp/img/article-default.png' %}" alt="No image" width="60" class="rounded">
                                                     {% endif %}
                                                 {% endwith %}
                                             </a>
 
                                             <div>
                                                 <a href="{{ item.product.get_absolute_url }}" class="text-decoration-none">
-                                                    {{ item.product.name }}
+                                                    <strong>{{ item.product.name }}</strong>
                                                 </a>
                                             </div>
                                         </div>
                                     </td>
                                     <td>{{ item.price }} ₽</td>
                                     <td>{{ item.quantity }}</td>
-                                    <td class="text-end">{{ item.total_price }} ₽</td>
+                                    <td class="text-end"><strong>{{ item.total_price }} ₽</strong></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <th colspan="3">Итого</th>
-                                    <th class="text-end">{{ order.total_price }} ₽</th>
+                                <tr class="table-active">
+                                    <th colspan="3"><i class="fas fa-calculator me-2"></i>Итого к оплате</th>
+                                    <th class="text-end"><h5 class="mb-0 text-primary">{{ order.total_price }} ₽</h5></th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -74,55 +75,103 @@
         </div>
 
         <div class="col-md-4">
+            <!-- Информация о заказе -->
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Информация о заказе</h5>
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Информация о заказе</h5>
                 </div>
 
                 <div class="card-body">
                     <div class="mb-3">
-                        <h6>Дата заказа</h6>
-                        <p>{{ order.created_at|date:"d.m.Y H:i" }}</p>
+                        <h6 class="text-muted">Номер заказа</h6>
+                        <p class="mb-0"><strong>#{{ order.order_number }}</strong></p>
                     </div>
 
-                    <div class="mb-3">
-                        <h6>Способ оплаты</h6>
-                        <p>{{ order.get_payment_method_display }}</p>
-                    </div>
+                    <hr>
 
                     <div class="mb-3">
-                        <h6>Статус оплаты</h6>
-                        <p>
+                        <h6 class="text-muted">Дата заказа</h6>
+                        <p class="mb-0"><i class="fas fa-calendar me-2"></i>{{ order.created_at|date:"d.m.Y H:i" }}</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted">Способ оплаты</h6>
+                        <p class="mb-0">{{ order.get_payment_method_display }}</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted">Статус оплаты</h6>
+                        <p class="mb-0">
                             {% if order.is_paid %}
-                            <span class="badge bg-success">Оплачен</span>
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle me-1"></i>Оплачен
+                            </span>
                             {% else %}
-                            <span class="badge bg-warning text-dark">Ожидает оплаты</span>
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-hourglass-half me-1"></i>Ожидает оплаты
+                            </span>
                             {% endif %}
                         </p>
                     </div>
                 </div>
             </div>
 
+            <!-- Данные доставки -->
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Данные доставки</h5>
+                    <h5 class="mb-0"><i class="fas fa-truck me-2"></i>Данные доставки</h5>
                 </div>
 
                 <div class="card-body">
                     <div class="mb-3">
-                        <h6>Адрес доставки</h6>
-                        <p>{{ order.delivery_address }}</p>
+                        <h6 class="text-muted">ФИО получателя</h6>
+                        <p class="mb-0"><strong>{{ order.name }}</strong></p>
                     </div>
 
+                    <hr>
+
                     <div class="mb-3">
-                        <h6>Телефон</h6>
-                        <p>{{ order.phone_number }}</p>
+                        <h6 class="text-muted">Адрес доставки</h6>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>{{ order.address }}</p>
                     </div>
 
-                    {% if order.notes %}
+                    <hr>
+
                     <div class="mb-3">
-                        <h6>Комментарий</h6>
-                        <p>{{ order.notes }}</p>
+                        <h6 class="text-muted">Телефон</h6>
+                        <p class="mb-0"><i class="fas fa-phone me-2"></i><a href="tel:{{ order.phone }}">{{ order.phone }}</a></p>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted">Электронная почта</h6>
+                        <p class="mb-0">
+                            {% if order.email %}
+                                <i class="fas fa-envelope me-2"></i><a href="mailto:{{ order.email }}">{{ order.email }}</a>
+                            {% else %}
+                                <span class="text-muted">не указана</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    {% if order.delivery_time %}
+                    <hr>
+                    <div class="mb-3">
+                        <h6 class="text-muted">Время доставки</h6>
+                        <p class="mb-0"><i class="fas fa-clock me-2"></i>{{ order.delivery_time }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if order.comment %}
+                    <hr>
+                    <div class="mb-0">
+                        <h6 class="text-muted">Комментарий</h6>
+                        <p class="mb-0"><i class="fas fa-comment me-2"></i>{{ order.comment }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -130,13 +179,26 @@
         </div>
     </div>
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-        <a href="{% url 'order_history' %}" class="btn btn-outline-secondary me-md-2">
-            <i class="fas fa-arrow-left me-2"></i>Назад к списку заказов
+    <!-- Кнопки действий -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4 mb-5">
+        <a href="{% url 'order_history' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Вернуться к списку заказов
         </a>
         <button class="btn btn-primary" onclick="window.print()">
-            <i class="fas fa-print me-2"></i>Распечатать
+            <i class="fas fa-print me-2"></i>Распечатать заказ
         </button>
     </div>
 </div>
+
+<style>
+    @media print {
+        .btn, .d-md-flex {
+            display: none !important;
+        }
+        
+        .card {
+            page-break-inside: avoid;
+        }
+    }
+</style>
 {% endblock %}
