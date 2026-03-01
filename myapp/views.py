@@ -1,12 +1,12 @@
 import random
-from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import send_mail
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
 import logging
 
 from django.views.generic import ListView
@@ -102,6 +102,22 @@ def reviews(request):
             review.author = request.user.username
             review.save()
 
+            try:
+                send_mail(
+                    subject='Новый отзыв на сайте',
+                    message=(
+                        f'От: {request.user.username}\n'
+                        f'Оценка: {review.rating}\n'
+                        f'Содержимое:\n{review.text}'
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.ADMIN_EMAIL],
+                    fail_silently=True
+                )
+
+            except Exception as e:
+                print(f'Ошибка отправки: {e}')
+
             return redirect('reviews')
 
         else:
@@ -115,29 +131,6 @@ def reviews(request):
     return render(request, 'myapp/reviews.html', {
         'form': form, 'reviews': reviews_list, 'title': 'Отзывы о нас'
     })
-
-        # text = request.POST.get('text', '').strip()
-        # rating = int(request.POST.get('rating', 5))
-        #
-        # pause = timezone.now() - timedelta(minutes=1)
-        #
-        # recent_review = Review.objects.filter(author=request.user.username, created_at__gt=pause).exists()
-        #
-        # if recent_review:
-        #     messages.error(request, 'Вы можете оставлять отзыв раз в пять минут.')
-        #     return redirect('reviews')
-        #
-        # if not text:
-        #     messages.error(request, 'Заполните отзыв.')
-        #
-        # else:
-        #     Review.objects.create(author=request.user.username, text=text, rating=rating)
-        #     messages.success(request, 'Ваш отзыв отправлен.')
-        #     return redirect('reviews')
-
-
-    reviews_list = Review.objects.all().order_by('-created_at')
-    return render(request, 'myapp/reviews.html', {'reviews': reviews_list, 'title': 'Отзывы о нас'})
 
 
 @login_required

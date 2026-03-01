@@ -28,12 +28,12 @@ def notify_admin_about_new_order(sender, instance, created, **kwargs):
         local_time = timezone.localtime(instance.created_at)
         subject = 'Новый заказ'
         message = (
-            f'Создан новый заказ!\n'
+            f' Создан новый заказ!\n'
             f'Номер заказа: {instance.order_number}\n'
             f'ФИО: {instance.name}\n'
             f'Номер телефона: {instance.phone}\n'
             f'Время доставки: {instance.delivery_time or "Не указано"}\n'
-            f'Сумма заказа: {instance.total_price} ₽\n'
+            f'Сумма заказа: {instance.total_price()} ₽\n'
             f'Дата заказа: {local_time.strftime("%Y-%m-%d %H:%M:%S")}\n'
         )
 
