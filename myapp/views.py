@@ -176,6 +176,7 @@ def order_view(request):
             order = form.save(commit=False)
             order.user = request.user
             order.order_number = f'{random.randint(1, 100000)}'
+            order.total_price = total
             order.save()
 
             for item in cart_items:

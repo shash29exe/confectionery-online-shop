@@ -112,12 +112,17 @@ class Order(models.Model):
     status = models.CharField('Статус заказа', max_length=20, choices=STATUS_CHOICES, default='new')
     payment_method = models.CharField('Метод оплаты', max_length=20, choices=PAYMENT_METHODS, default='cash')
     is_paid = models.BooleanField('Оплачен', default=False)
+    total_price = models.DecimalField('Сумма заказа', max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return f'Номер заказа: {self.order_number}'
 
-    def total_price(self):
-        return sum(item.total_price for item in self.items.all())
+    def update_total_price(self):
+        self.total_price = sum(item.price*item.quantity for item in self.items.all)
+        self.save()
+
+    # def total_price(self):
+    #     return sum(item.total_price for item in self.items.all())
 
 
 class OrderItem(models.Model):

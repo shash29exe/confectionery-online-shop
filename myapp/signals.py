@@ -33,7 +33,7 @@ def notify_admin_about_new_order(sender, instance, created, **kwargs):
             f'ФИО: {instance.name}\n'
             f'Номер телефона: {instance.phone}\n'
             f'Время доставки: {instance.delivery_time or "Не указано"}\n'
-            f'Сумма заказа: {instance.total_price()} ₽\n'
+            f'Сумма заказа: {instance.total_price} ₽\n'
             f'Дата заказа: {local_time.strftime("%Y-%m-%d %H:%M:%S")}\n'
         )
 
