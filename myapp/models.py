@@ -121,9 +121,6 @@ class Order(models.Model):
         self.total_price = sum(item.price*item.quantity for item in self.items.all)
         self.save()
 
-    # def total_price(self):
-    #     return sum(item.total_price for item in self.items.all())
-
 
 class OrderItem(models.Model):
     """
