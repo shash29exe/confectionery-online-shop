@@ -1,3 +1,5 @@
+import threading
+
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.core.mail import send_mail
@@ -37,4 +39,16 @@ def notify_admin_about_new_order(sender, instance, created, **kwargs):
             f'Дата заказа: {local_time.strftime("%Y-%m-%d %H:%M:%S")}\n'
         )
 
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [settings.ADMIN_EMAIL], fail_silently=True)
+        threading.Thread(
+            target=send_email_async,
+            args=(subject, message)
+        ).start()
+
+def send_email_async(subject, message):
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [settings.ADMIN_EMAIL],
+        fail_silently=True,
+    )

@@ -1,4 +1,5 @@
 import random
+import threading
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -102,21 +103,11 @@ def reviews(request):
             review.author = request.user.username
             review.save()
 
-            try:
-                send_mail(
-                    subject='Новый отзыв на сайте',
-                    message=(
-                        f'От: {request.user.username}\n'
-                        f'Оценка: {review.rating}\n'
-                        f'Содержимое:\n{review.text}'
-                    ),
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[settings.ADMIN_EMAIL],
-                    fail_silently=True
-                )
-
-            except Exception as e:
-                print(f'Ошибка отправки: {e}')
+            threading.Thread(
+                target=send_review_email,
+                args=(request.user, review)
+            ).start()
+            messages.success(request, 'Отзыв отправлен')
 
             return redirect('reviews')
 
@@ -126,7 +117,7 @@ def reviews(request):
     else:
         form = ReviewForm()
 
-    reviews_list = Review.objects.all().order_by('-created_at')
+    reviews_list = Review.objects.all()
 
     return render(request, 'myapp/reviews.html', {
         'form': form, 'reviews': reviews_list, 'title': 'Отзывы о нас'
@@ -213,3 +204,18 @@ def order_history(request):
     """View для отображения истории заказов пользователя"""
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'myapp/order_history.html', {'orders': orders})
+
+
+def send_review_email(user, review):
+    """Отправка отзыва на почту"""
+    send_mail(
+        subject='Новый отзыв на сайте',
+        message=(
+            f'Пользователь: {user.username}\n'
+            f'Оценка: {review.rating}\n'
+            f'Содержане: {review.text}\n'
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[settings.EMAIL_HOST_USER],
+        fail_silently=False
+    )
