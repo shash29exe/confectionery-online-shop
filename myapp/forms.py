@@ -38,3 +38,10 @@ class OrderForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'rows': 3}),
             'payment_method': forms.Select()
         }
+
+
+    def clean_name(self):
+        name=self.cleaned_data.get('name')
+        if len(name) < 2 or len(name) > 15:
+            raise forms.ValidationError('Имя должно содержать не менее 2-х и не более 15 символов.')
+        return name
