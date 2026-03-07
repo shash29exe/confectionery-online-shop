@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from .models import Review, Order
 
@@ -42,6 +44,18 @@ class OrderForm(forms.ModelForm):
 
     def clean_name(self):
         name=self.cleaned_data.get('name')
-        if len(name) < 2 or len(name) > 15:
+        if len(name) < 2 or len(name) > 25:
             raise forms.ValidationError('Имя должно содержать не менее 2-х и не более 15 символов.')
         return name
+
+    def clean_phone(self):
+        phone=self.cleaned_data.get('phone')
+        if not re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', phone):
+            raise forms.ValidationError('Введите корректный номер телефона. Пример: +79005001020')
+        return phone
+
+    def clean_email(self):
+        email=self.cleaned_data.get('email')
+        if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+            raise forms.ValidationError('Введите корректную почту. Пример: user@example.com')
+        return email
