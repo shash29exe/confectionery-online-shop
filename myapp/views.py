@@ -1,5 +1,7 @@
 import random
 import threading
+from datetime import timedelta
+from django.utils import timezone
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -99,6 +101,11 @@ def reviews(request):
         form = ReviewForm(request.POST)
 
         if form.is_valid():
+            last_review = Review.objects.filter(author=request.user.username).order_by('-created_at').first()
+            if last_review and timezone.now() - last_review.created_at < timedelta(minutes=5):
+                messages.error(request, 'Отправлять отзыв можно 1 раз в 5 минут')
+                return redirect('reviews')
+
             review = form.save(commit=False)
             review.author = request.user.username
             review.save()
