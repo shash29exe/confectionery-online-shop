@@ -101,9 +101,18 @@ def reviews(request):
         form = ReviewForm(request.POST)
 
         if form.is_valid():
+            text = form.cleaned_data['text']
+
             last_review = Review.objects.filter(author=request.user.username).order_by('-created_at').first()
             if last_review and timezone.now() - last_review.created_at < timedelta(minutes=5):
                 messages.error(request, 'Отправлять отзыв можно 1 раз в 5 минут')
+                return redirect('reviews')
+
+            duplicate_review = Review.objects.filter(author=request.user.username,
+            text__iexact = text.strip()).exists()
+
+            if duplicate_review:
+                messages.error(request, 'Такой отзыв уже существует')
                 return redirect('reviews')
 
             review = form.save(commit=False)
