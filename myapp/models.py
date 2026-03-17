@@ -54,6 +54,7 @@ class Review(models.Model):
     text = models.TextField('Содержимое отзыва')
     rating = models.PositiveSmallIntegerField('Оценка', default=5)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    is_approved = models.BooleanField('Одобрен', default=False)
 
     def __str__(self):
         return f'Отзыв от {self.author}'

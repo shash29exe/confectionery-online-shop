@@ -102,10 +102,19 @@ def reviews(request):
 
         if form.is_valid():
             text = form.cleaned_data['text']
+            now = timezone.now()
 
             last_review = Review.objects.filter(author=request.user.username).order_by('-created_at').first()
             if last_review and timezone.now() - last_review.created_at < timedelta(minutes=5):
                 messages.error(request, 'Отправлять отзыв можно 1 раз в 5 минут')
+                return redirect('reviews')
+
+            one_hour_ago = now - timedelta(hours=1)
+            reviews_last_hour = Review.objects.filter(author=request.user.username,
+                                                      created_at__gte=one_hour_ago
+                                                      ).count()
+            if reviews_last_hour >= 3:
+                messages.error(request, 'Количество отзывов не может быть более трёх в течение часа')
                 return redirect('reviews')
 
             duplicate_review = Review.objects.filter(author=request.user.username,
@@ -133,7 +142,7 @@ def reviews(request):
     else:
         form = ReviewForm()
 
-    reviews_list = Review.objects.all()
+    reviews_list = Review.objects.filter(is_approved=True)
 
     return render(request, 'myapp/reviews.html', {
         'form': form, 'reviews': reviews_list, 'title': 'Отзывы о нас'
